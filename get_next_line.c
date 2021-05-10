@@ -6,11 +6,10 @@
 /*   By: kkai <kkai@student.42tokyo.jp>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/04 19:28:48 by kkai              #+#    #+#             */
-/*   Updated: 2021/05/11 01:03:35 by kkai             ###   ########.fr       */
+/*   Updated: 2021/05/11 01:26:45 by kkai             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
 #include "get_next_line.h"
 
 static int	ft_strchr(char *buff, char c)
@@ -26,7 +25,6 @@ static int	ft_strchr(char *buff, char c)
 	}
 	return (i);
 }
-
 
 static int		ft_put_line(char **line, char **memo, char *buff)
 {
