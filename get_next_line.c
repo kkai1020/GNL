@@ -6,33 +6,47 @@
 /*   By: kkai <kkai@student.42tokyo.jp>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/04 19:28:48 by kkai              #+#    #+#             */
-/*   Updated: 2021/05/09 00:37:02 by kkai             ###   ########.fr       */
+/*   Updated: 2021/05/11 01:03:35 by kkai             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "get_next_line.h"
 
-int		ft_put_line(char **line, char **memo, char *buff)
+static int	ft_strchr(char *buff, char c)
+{
+	size_t	i;
+
+	i = 0;
+	while (buff[i] != '\0')
+	{
+		if (buff[i] == c)
+			return (i);
+		i++;
+	}
+	return (i);
+}
+
+
+static int		ft_put_line(char **line, char **memo, char *buff)
 {
 	int		flag;
 	size_t	n;
 	char	*tmp;
 
-	// 改行文字を探す
-	n = ft_strchar(buff, '\n');
+	n_add = ft_strchar(buff, '\n');
 	// 改行文字までをtmpに入れる tmp = aaa\n
-	tmp = ft_strjoin(*line, buff, -1, n);
+	tmp = ft_strjoin(*line, buff, n_add);
 	if (tmp == NULL)
 		return (-1);
 	free(*line);
 	*line = tmp;
 	tmp = NULL;
 	flag = 0;
-	if (buff[n] == '\n')
+	if (buff[n_add] == '\n')
 	{
 		// 改行の先をtmpに入れる
-		tmp = ft_strdup(buff + n + 1);
+		tmp = ft_strdup(buff[n_add + 1]);
 		if (tmp == NULL)
 			return (-1);
 		flag = 1;
@@ -44,28 +58,31 @@ int		ft_put_line(char **line, char **memo, char *buff)
 
 int	get_next_line(int fd, char **line)
 {
-	static char	*memo;
+	static char	*memo[256];
+	char		*buff;
 	int			flag;
 	ssize_t		n;
-	char		*buff;
 
 	flag = 0;
-	if (fd < 0 || MAX_FD <= fd || line == NULL)
+	if (fd < 0 || 256 <= fd || line == NULL || BUFFER_SIZE <= 0)
 		return (-1);
 	*line = (char *)malloc(sizeof(char) * 1);
 	if (*line == NULL)
 		return (-1);
-	*line[0] = 0;
-	if (memo)
-		flag = ft_put_line(line, &memo, memo);
+	*line[0] = '\0';
+	flag = 0;
+	if (memo[fd])
+		flag = ft_put_line(line, &memo[fd], memo[fd]);
 	buff = (char *)malloc(BUFFER_SIZE + 1);
 	if (buff == NULL)
 		return (-1);
-	n = read(0, buff, BUFFER_SIZE);
+	n = read(fd, buff, BUFFER_SIZE);
 	while (flag == 0 && n > 0)
 	{
-		buff[n] = 0;
-		flag = ft_put_line(line, &memo, buff);
+		buff[n] = '\0';
+		flag = ft_put_line(line, &memo[fd], buff);
+		if (flag == 0)
+			n = read(fd, buff, BUFFER_SIZE);
 	}
 	free(buff);
 	if (flag == -1)
@@ -74,6 +91,5 @@ int	get_next_line(int fd, char **line)
 		memo = NULL;
 		free(*line);
 	}
-
 	return (flag);
 }
