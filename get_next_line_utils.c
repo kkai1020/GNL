@@ -6,7 +6,7 @@
 /*   By: kkai <kkai@student.42tokyo.jp>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/10 16:24:15 by kkai              #+#    #+#             */
-/*   Updated: 2021/05/11 01:10:47 by kkai             ###   ########.fr       */
+/*   Updated: 2021/05/13 17:33:25 by kkai             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ size_t	ft_strlen(char *str)
 
 	i = 0;
 	while (str[i] != '\0')
-		i++
+		i++;
 	return (i);
 }
 
-char	*ft_strjoin(char *line, char *buff, size_t n)
-{,
+char	*ft_strjoin(char *line, char *buff, size_t n_add)
+{
 	char	*heap;
 	size_t	i;
 	size_t	j;
@@ -34,10 +34,14 @@ char	*ft_strjoin(char *line, char *buff, size_t n)
 	if (heap == NULL)
 		return (NULL);
 	i = 0;
-	while (line[i] != '\0')
-		heap[i++] = line[i++];
+	while (line[i])
+	{
+		heap[i] = line[i];
+		i++;
+	}
+	heap[i] = '\0';
 	j = 0;
-	while (j <= n)
+	while (j <= n_add)
 		heap[i++] = buff[j++];
 	heap[i] = '\0';
 	return (heap);

@@ -6,13 +6,13 @@
 /*   By: kkai <kkai@student.42tokyo.jp>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/04 19:28:48 by kkai              #+#    #+#             */
-/*   Updated: 2021/05/11 01:26:45 by kkai             ###   ########.fr       */
+/*   Updated: 2021/05/13 18:51:05 by kkai             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static int	ft_strchr(char *buff, char c)
+static size_t	ft_strchr(char *buff, char c)
 {
 	size_t	i;
 
@@ -29,28 +29,31 @@ static int	ft_strchr(char *buff, char c)
 static int		ft_put_line(char **line, char **memo, char *buff)
 {
 	int		flag;
-	size_t	n;
+	size_t	n_add;
 	char	*tmp;
 
-	n_add = ft_strchar(buff, '\n');
+	n_add = ft_strchr(buff, '\n');
 	// 改行文字までをtmpに入れる tmp = aaa\n
 	tmp = ft_strjoin(*line, buff, n_add);
 	if (tmp == NULL)
 		return (-1);
 	free(*line);
 	*line = tmp;
+	// free(tmp);
 	tmp = NULL;
 	flag = 0;
 	if (buff[n_add] == '\n')
 	{
 		// 改行の先をtmpに入れる
-		tmp = ft_strdup(buff[n_add + 1]);
+		tmp = ft_strdup(&buff[n_add + 1]);
 		if (tmp == NULL)
 			return (-1);
 		flag = 1;
 	}
 	free(*memo);
 	*memo = tmp;
+	// free(tmp);
+	// tmp = NULL;
 	return (flag);
 }
 
@@ -61,10 +64,9 @@ int	get_next_line(int fd, char **line)
 	int			flag;
 	ssize_t		n;
 
-	flag = 0;
 	if (fd < 0 || 256 <= fd || line == NULL || BUFFER_SIZE <= 0)
 		return (-1);
-	*line = (char *)malloc(sizeof(char) * 1);
+	*line = (char *)malloc(1);
 	if (*line == NULL)
 		return (-1);
 	*line[0] = '\0';
@@ -74,8 +76,10 @@ int	get_next_line(int fd, char **line)
 	buff = (char *)malloc(BUFFER_SIZE + 1);
 	if (buff == NULL)
 		return (-1);
-	n = read(fd, buff, BUFFER_SIZE);
-	while (flag == 0 && n > 0)
+	n = 0;
+	if (flag == 0)
+		n = read(fd, buff, BUFFER_SIZE);
+	while (n > 0 && flag == 0)
 	{
 		buff[n] = '\0';
 		flag = ft_put_line(line, &memo[fd], buff);
@@ -86,8 +90,34 @@ int	get_next_line(int fd, char **line)
 	if (flag == -1)
 	{
 		free(memo);
-		memo = NULL;
+		*memo = NULL;
 		free(*line);
 	}
+	if (n == -1)
+		return (-1);
 	return (flag);
 }
+
+// int    main(void)
+// {
+//     int    d = 1;
+//     char    *line;
+//     int    fd;
+//     int    i = 1;
+
+// 	fd = open("nl", O_RDONLY);
+//     printf("BUFFER_SIZE: %d\n", BUFFER_SIZE);
+//     while (d == 1)
+//     {
+//         printf("---%dline---\n", i);
+//         d = get_next_line(fd, &line);//get_next_lineの第一引数がfdでないと、ファイルを読み込んだfdを指定できない。
+//         printf("%s\t", line);
+//         free(line);//ここがないと行数-1分リークする
+//         printf("d : %d\n", d);
+//         i++;
+//     }
+//     close(fd);
+//     // put_mf();
+//     system("leaks a.out");
+//     return (0);
+// }
