@@ -6,7 +6,7 @@
 /*   By: kkai <kkai@student.42tokyo.jp>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/10 16:24:15 by kkai              #+#    #+#             */
-/*   Updated: 2021/05/13 17:33:25 by kkai             ###   ########.fr       */
+/*   Updated: 2021/05/20 03:33:47 by kkai             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*ft_strjoin(char *line, char *buff, size_t n_add)
 
 	if (line == NULL || buff == NULL)
 		return (NULL);
-	heap = (char *)malloc(ft_strlen(line) + ft_strlen(buff) + 1);
+	heap = (char *)malloc(ft_strlen(line) + ft_strlen(buff) + 2);
 	if (heap == NULL)
 		return (NULL);
 	i = 0;
@@ -41,7 +41,7 @@ char	*ft_strjoin(char *line, char *buff, size_t n_add)
 	}
 	heap[i] = '\0';
 	j = 0;
-	while (j <= n_add)
+	while (j < n_add)
 		heap[i++] = buff[j++];
 	heap[i] = '\0';
 	return (heap);

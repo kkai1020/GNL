@@ -6,7 +6,7 @@
 /*   By: kkai <kkai@student.42tokyo.jp>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/04 19:28:48 by kkai              #+#    #+#             */
-/*   Updated: 2021/05/13 18:51:05 by kkai             ###   ########.fr       */
+/*   Updated: 2021/05/20 04:53:27 by kkai             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,12 @@ static int		ft_put_line(char **line, char **memo, char *buff)
 		return (-1);
 	free(*line);
 	*line = tmp;
-	// free(tmp);
 	tmp = NULL;
 	flag = 0;
 	if (buff[n_add] == '\n')
 	{
 		// 改行の先をtmpに入れる
+		// free(tmp);
 		tmp = ft_strdup(&buff[n_add + 1]);
 		if (tmp == NULL)
 			return (-1);
@@ -53,7 +53,7 @@ static int		ft_put_line(char **line, char **memo, char *buff)
 	free(*memo);
 	*memo = tmp;
 	// free(tmp);
-	// tmp = NULL;
+	tmp = NULL;
 	return (flag);
 }
 
@@ -71,11 +71,14 @@ int	get_next_line(int fd, char **line)
 		return (-1);
 	*line[0] = '\0';
 	flag = 0;
-	if (memo[fd])
-		flag = ft_put_line(line, &memo[fd], memo[fd]);
 	buff = (char *)malloc(BUFFER_SIZE + 1);
 	if (buff == NULL)
+	{
+		free(*line);
 		return (-1);
+	}
+	if (memo[fd])
+		flag = ft_put_line(line, &memo[fd], memo[fd]);
 	n = 0;
 	if (flag == 0)
 		n = read(fd, buff, BUFFER_SIZE);
@@ -87,6 +90,7 @@ int	get_next_line(int fd, char **line)
 			n = read(fd, buff, BUFFER_SIZE);
 	}
 	free(buff);
+	buff = NULL;
 	if (flag == -1)
 	{
 		free(memo);

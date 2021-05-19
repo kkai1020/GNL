@@ -5,10 +5,10 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-#ifdef BUFFER_SIZE
-#else
-	#define BUFFER_SIZE (32)
-#endif
+// #ifdef BUFFER_SIZE
+// #else
+// 	#define BUFFER_SIZE (32)
+// #endif
 
 int		get_next_line(int fd, char **line);
 size_t	ft_strlen(char *str);
